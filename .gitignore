@@ -1,3 +1,6 @@
 # Exclude everything in the /data directory
 data/*
+# Except the .keep file
+!data/.keep
+
 
