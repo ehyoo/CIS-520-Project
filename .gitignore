@@ -1,5 +1,3 @@
 # Exclude everything in the /data directory
 data/*
-# Keep the initialize script in /data
-!data/download_data.py
 
