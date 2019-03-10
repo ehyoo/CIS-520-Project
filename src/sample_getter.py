@@ -29,50 +29,60 @@ counter = 1
 
 CUTOFF = 0.1
 
-statistics_dict = {
-    "labels": {
-        "0": 0,
-        "1": 0
-    },
-    "subreddits": {},
-    "num_lines": 0,
-    "agg_ups": 0,
-    "agg_downs": 0,
-    "agg_score": 0
-}
+subreddits_dict = {}
 
 line_cache = []
+label_cache = []
+score_cache = []
+ups_cache = []
+downs_cache = []
+comment_wc_cache = []
+parent_wc_cache = []
+
+def get_word_count_of_comment(comment):
+    return str(len(comment.split())) # Simple word count by splitting on space.
 
 with open('../data/train-unbalanced.csv') as f:
     while True:
         line = f.readline()
         if not line:
             print("Reached end.") # Just to keep track of where we are.
-            with open('../data/intermediate_summary_statistics.csv', 'w+') as note:
-                json.dump(statistics_dict, note)
-            with open('../data/sample_train_unbalanced.csv', 'a') as note:
+            with open('../data/samples/subreddits_in_training.txt', 'w+') as note:
+                json.dump(subreddits_dict, note)
+            with open('../data/samples/sample_train_unbalanced.csv', 'a') as note:
                 for selected_line in line_cache:
                     note.write(selected_line)
-            line_cache = []
+            with open('../data/samples/train_unbalanced_statistics.csv', 'a') as note:
+                for i in range(len(score_cache)):
+                    line_to_write = label_cache[i] + ',' + score_cache[i] + ',' + ups_cache[i] + ',' + downs_cache[i] + '\n'
+                    note.write(line_to_write)
             print("no more lines")
             break
 
         split_line = line.split('\t')
         # Firstly, getting our label
         label = split_line[0]
-        statistics_dict['labels'][label] = statistics_dict['labels'][label] + 1
+        label_cache.append(label)
         # Then, the subreddit
         subreddit = split_line[3]
-        if subreddit not in statistics_dict['subreddits']:
-            statistics_dict['subreddits'][subreddit] = 0
-        statistics_dict['subreddits'][subreddit] = statistics_dict['subreddits'][subreddit] + 1
+        if subreddit not in subreddits_dict:
+            subreddits_dict[subreddit] = 0
+        subreddits_dict[subreddit] = subreddits_dict[subreddit] + 1
         # Then, the score, ups, and downs
-        score = int(split_line[4])
-        ups = int(split_line[5])
-        downs = int(split_line[6])
-        statistics_dict['agg_score'] = statistics_dict['agg_score'] + score
-        statistics_dict['agg_ups'] = statistics_dict['agg_ups'] + ups
-        statistics_dict['agg_downs'] = statistics_dict['agg_downs'] + downs
+        score = split_line[4]
+        ups = split_line[5]
+        downs = split_line[6]
+        score_cache.append(score)
+        ups_cache.append(ups)
+        downs_cache.append(downs)
+
+        # Then, the Parent and Child word count
+        parent_comment = split_line[9]
+        original_comment = split_line[1]
+        parent_comment_wc = get_word_count_of_comment(parent_comment)
+        original_comment_wc = get_word_count_of_comment(original_comment)
+        parent_wc_cache.append(parent_comment_wc)
+        comment_wc_cache.append(original_comment_wc)
 
         # Then, get our sample
         rand_draw = np.random.uniform()
@@ -81,11 +91,23 @@ with open('../data/train-unbalanced.csv') as f:
 
         if counter % 1000000 == 0:
             print("Reached " + str(counter) + "... Writing results to disk") # Just to keep track of where we are.
-            with open('../data/intermediate_summary_statistics.csv', 'w+') as note:
-                json.dump(statistics_dict, note)
-            with open('../data/sample_train_unbalanced.csv', 'a') as note:
+            with open('../data/samples/subreddits_in_training.txt', 'w+') as note:
+                json.dump(subreddits_dict, note)
+            with open('../data/samples/sample_train_unbalanced.csv', 'a') as note:
                 for selected_line in line_cache:
                     note.write(selected_line)
+            with open('../data/samples/train_unbalanced_statistics.csv', 'a') as note:
+                for i in range(len(score_cache)):
+                    line_to_write = label_cache[i] + ',' + score_cache[i] + ',' + ups_cache[i] + ',' + \
+                                    downs_cache[i] + ',' + comment_wc_cache[i] + ',' + parent_wc_cache[i] + '\n'
+                    note.write(line_to_write)
+
             line_cache = []
+            label_cache = []
+            score_cache = []
+            ups_cache = []
+            downs_cache = []
+            comment_wc_cache = []
+            parent_wc_cache = []
 
         counter = counter + 1

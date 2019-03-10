@@ -2,5 +2,5 @@
 data/*
 # Except the .keep file
 !data/.keep
-
+!data/samples/.keep
 
