@@ -1,0 +1,68 @@
+---
+title: "Exploratory Data Analysis"
+author:
+ - Ed Yoo
+output: html_notebook
+---
+
+Howdy it's time for data wrangling.
+Our schema is `label, comment, author, subreddit, score, ups, downs, date, created_utc, parent_comment`, with tab delimiters.
+
+We also extracted some key numbers from the entire sample, with the schema:  
+`label, score, ups, downs, comment word count, parent comment word count`
+with comma delimiters.
+
+NOTE: delete line 2026907: The comments in this line don't play nicely with R. The comment itself actually doesn't give us any input- the original comment is full of garbage values, and it is a reply to a comment with just a binary string. Reddit is weird.
+
+```{r}
+set.seed(14) # For deterministic output.
+sum.stats.cols <- c("label", "score", "ups", "downs", "comment.wc", "parent.comment.wc")
+
+full.train.stats.df <- read.csv("../data/samples/train_unbalanced_statistics.csv", header=FALSE)
+colnames(full.train.stats.df) <- sum.stats.cols
+full.train.stats.df$label <- as.factor(full.train.stats.df$label)
+```
+We'll only do the lightest of EDA on the test set.
+
+Let's first consider the ratio of sarcastic and non-sarcastic comments in the unbalanced set to have a better idea of the imbalance. The Kaggle documentation said that the ratio is close to 1:100.
+
+```{r}
+summary(full.train.stats.df)
+```
+
+
+
+Then reading in our selected sample from the Python script:
+```{r}
+rm(full.train.stats.df)
+sampled.train.df <- read.csv("../data/samples/sample_train_unbalanced.csv", header=FALSE, sep='\t', stringsAsFactors=FALSE)
+train.schema <- c("label", "comment", "author", "subreddit", "score", "ups", "downs", "date", "created.utc", "parent.comment")
+colnames(sampled.train.df) <- train.schema
+```
+
+
+```{r}
+get.word.count.of.comment <- function(comment) {
+  return(sapply(strsplit(comment, " "), length))
+}
+```
+
+```{r}
+all.comment.wc <- rep(NA, nrow(sampled.train.df))
+all.parent.comment.wc <- rep(NA, nrow(sampled.train.df))
+for (i in 1:nrow(sampled.train.df)) {
+  all.comment.wc[i] <- get.word.count.of.comment(sampled.train.df$comment[i])
+  all.parent.comment.wc[i] <- get.word.count.of.comment(sampled.train.df$parent.comment[i])
+}
+```
+
+```{r}
+sampled.train.df$comment.wc <- all.comment.wc
+sampled.train.df$parent.comment.wc <- all.parent.comment.wc
+
+sum.stats.sampled.train.df <- sampled.train.df[, c("label", "score", "ups", "downs", "comment.wc", "parent.comment.wc")]
+sum.stats.sampled.train.df$label <- as.factor(sum.stats.sampled.train.df$label)
+
+summary(sum.stats.sampled.train.df)
+```
+
