@@ -54,7 +54,8 @@ with open('../data/train-unbalanced.csv') as f:
                     note.write(selected_line)
             with open('../data/samples/train_unbalanced_statistics.csv', 'a') as note:
                 for i in range(len(score_cache)):
-                    line_to_write = label_cache[i] + ',' + score_cache[i] + ',' + ups_cache[i] + ',' + downs_cache[i] + '\n'
+                    line_to_write = label_cache[i] + ',' + score_cache[i] + ',' + ups_cache[i] + ',' + \
+                                    downs_cache[i] + ',' + comment_wc_cache[i] + ',' + parent_wc_cache[i] + '\n'
                     note.write(line_to_write)
             print("no more lines")
             break
