@@ -40,8 +40,8 @@ Y_train = read_labels(Train_labels_path)
 X_train = load_npz(Train_features_path).tocsr()
 
 deg = [1,2,3]
-C = [1e-2, 1e-1, 1, 10, 100]
-W = [1, 50, 200]
+C = [1e-1, 1, 10, 100]
+W = [75, 150, 225]
 
 scores = {}
 #f = open('../results/SVM_raw.json')
