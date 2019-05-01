@@ -1,4 +1,6 @@
 '''
+DEPRECATED.
+
 Filtering by subreddit
 '''
 

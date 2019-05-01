@@ -1,6 +1,8 @@
 import numpy as np 
 import json
 '''
+DEPRECATED SAMPLE GETTER- when we were working with the full reddit data set.
+
 Before beginning, the schema of our CSV is:
 label, comment, author, subreddit, score, ups, downs, date, created_utc, parent_comment
 With tab delimiters.

@@ -140,8 +140,8 @@ class Predictor:
 
 token_indexer = ELMoTokenCharactersIndexer()
 reader = rnnDatasetReader(token_indexers={"tokens": token_indexer})
-train_dataset = reader.read("/home/dkeren/Documents/Spring2019/CIS520/project/random_10000.csv")
-test_dataset = reader.read("/home/dkeren/Documents/Spring2019/CIS520/project/test_10_000.csv")
+train_dataset = reader.read("../data/samples/pol_train_cleaned.csv")
+# test_dataset = reader.read("../data/samples/pol_test_cleaned.csv")
 
 
 # Token embedding 
@@ -184,8 +184,9 @@ trainer = Trainer(model=model,
                   patience=10,
                   num_epochs=config.epochs,
                   cuda_device= 0 if USE_GPU else -1,)
+print("Training...")
 trainer.train()
-
+print("Done")
 
 
 # iterate over the dataset without changing its order
@@ -193,7 +194,7 @@ seq_iterator = BasicIterator(config.batch_size)
 seq_iterator.index_with(vocab)
 
 predictor = Predictor(model, seq_iterator)
-test_preds, labels = predictor.predict(test_dataset) 
+# test_preds, labels = predictor.predict(test_dataset) 
 #labels = test_dataset["labels"].detach().cu().numpy()
 accuracy_test = accuracy_score(test_preds,labels) 
 f1_test = f1_score(test_preds,labels)

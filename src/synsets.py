@@ -1,8 +1,5 @@
 from nltk.corpus import wordnet
 
-sentence = 'hello world my name is hello world'
-
-# im very skeptical of this concerning runtime but whatever
 memo = {}
 def get_synonyms_and_synset_of_sentence(s):
     synonym_count_list = []

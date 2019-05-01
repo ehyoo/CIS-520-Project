@@ -2,6 +2,8 @@
 """
 Created on Mon Apr 22 09:26:46 2019
 
+(For full feature merging, see the feature_merging notebook)
+
 @author: artur
 """
 

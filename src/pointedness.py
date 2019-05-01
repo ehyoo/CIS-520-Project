@@ -3,14 +3,11 @@ import string
 punct_set = set(string.punctuation)
 
 def get_pointed_for_word(w):
-    # punctuation marks, emoticons, quotes, and capitalized words, from the original spec by Reyes.
-    
-    # I'm just not going to do emoticons- we only check for number of punctuation marks and 
-    # full-caps words.
+    # We only check for number of punctuation marks and full-caps words.
     # Each punctuation mark (or string of punctuation marks) is a +1, and 
     # if the word is capitalized, that's a +1 as well.
-
     # From Reyes 2013
+    
     num_pointed = 0
     last_char_encountered = ''
     does_contain_non_punct = False
