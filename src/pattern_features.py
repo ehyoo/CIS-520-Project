@@ -269,11 +269,6 @@ def line_count(path):
     return i
             
 
-#training_path = '../data/samples/sample_train_unbalanced_red_red.csv'
-#test_path = '../data/samples/sample_train_unbalanced_red_red.csv'
-#test_path = '../data/samples/dummy.csv'
-#training_path = test_path
-
 training_path = '../data/samples/train-unbalanced.csv'
 test_path = '../data/samples/test-unbalanced.csv'
 
@@ -300,36 +295,3 @@ lines = [parse_line(l)[1:3] for l in f]
 Y_orig, Y_parent  = PF.Transform(lines)
 f.close()
 save_npz('../data/features/pattern_test.npz', hstack([Y_orig, Y_parent]))
-
-#print('Saving dataframes')
-#convert_to_df(X_orig.toarray(),PF,False).to_csv('../data/features/org_training_pattern_features.csv')
-#convert_to_df(X_parent.toarray(),PF,False).to_csv('../data/features/parent_training_pattern_features.csv')
-#convert_to_df(Y_orig.toarray(),PF,False).to_csv('../data/features/org_test_pattern_features.csv')
-#convert_to_df(Y_parent.toarray(),PF,False).to_csv('../data/features/parent_test_pattern_features.csv')
-
-
-#print('Getting punctiation features')
-#f = open(training_path)
-#lines = [parse_line(l)[1] for l in f]
-#X_p = punctuation_features(lines)
-#save_npz('../data/features/training_punctuation_features.npz', X_p)
-#f = open(test_path)
-#lines = [parse_line(l)[1] for l in f]
-#Y_p = punctuation_features(lines)
-#save_npz('../data/features/test_punctuation_features.npz', Y_p)
-
-
-
-
-
-  
-#comments = ['0 1 0 2 1 1 0 1', '1 0 1 1 0. 1']
-#parents = ['0 1 0 1 1', '1 0 1 1 0. 1']
-#HFW = set(['1', '2'])
-#labels = [0,0,0, 0]
-#PF = PatternFeatures(HFW)
-#A, B = PF.Fit_transform(zip(labels, comments, parents))
-#print(A.toarray())
-#print(B.toarray())
-#for m in PF.patterns:
-#    print(PF.patterns[m])
